@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "anchors-and-pixie-dust",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "npm", "--prefix", "C:\\Users\\Kyle\\KY Kode2\\anchors-and-pixie-dust", "run", "dev"],
+      "port": 5173
+    }
+  ]
+}
