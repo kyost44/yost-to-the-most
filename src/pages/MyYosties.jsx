@@ -3,6 +3,7 @@ import { useData } from '../contexts/DataContext';
 import { useAdmin } from '../contexts/AdminContext';
 import CharacterPickerModal from '../components/CharacterPickerModal';
 import { getShirtData, updatePersonShirt } from '../utils/shirtData';
+import { DAYS, DAY_GRAD } from '../data/scheduleData';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -19,21 +20,6 @@ function saveLocal(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 
 const EMBARKATION_DATE = new Date('2026-07-23T00:00:00');
 
-const TRIP_DAYS = [
-  { date: 'July 22', label: 'Arrive Fort Lauderdale', type: 'travel'  },
-  { date: 'July 23', label: 'Embarkation Day',         type: 'embark'  },
-  { date: 'July 24', label: 'Nassau, Bahamas',          type: 'port'    },
-  { date: 'July 25', label: 'Castaway Cay',             type: 'port'    },
-  { date: 'July 26', label: 'Day at Sea',               type: 'sea'     },
-  { date: 'July 27', label: 'Debarkation Day',          type: 'debark'  },
-  { date: 'July 28', label: 'Resort Day',               type: 'resort'  },
-  { date: 'July 29', label: 'Return Home',              type: 'travel'  },
-];
-
-const DAY_COLORS = {
-  travel: '#6366f1', embark: '#FF6B6B', port: '#0ea5e9',
-  sea: '#F4C430', debark: '#FF6B6B', resort: '#2ecc71',
-};
 
 
 const TIME_OPTIONS = [
@@ -90,12 +76,27 @@ function CabinTab({ family, cabins, families }) {
           </div>
           {/* Connects with */}
           {connectsFamily && (
-            <div className="rounded-xl px-4 py-3" style={{ background: connectsFamily.light + '15' }}>
+            <div className="rounded-xl px-4 py-3 mb-3" style={{ background: connectsFamily.light + '15' }}>
               <div className="font-nunito uppercase tracking-wide mb-1.5" style={{ fontSize: '11px', color: '#aaa' }}>Connects With</div>
               <span className="inline-flex items-center gap-1.5 font-nunito font-bold text-sm px-3 py-1 rounded-full"
                     style={{ background: connectsFamily.light, color: 'white' }}>
                 {connectsFamily.emoji} {connectsFamily.name} — Cabin {cabin.connects}
               </span>
+            </div>
+          )}
+          {/* Cross-cabin guest notes */}
+          {family.id === 'family3' && (
+            <div className="rounded-xl px-4 py-3" style={{ background: '#fff3e0', border: '1px solid #ffe0b2' }}>
+              <div className="font-nunito text-sm" style={{ color: '#e65100', lineHeight: 1.5 }}>
+                📍 <strong>Skye</strong> is sleeping in Cabin 7592 (Big Yosties)
+              </div>
+            </div>
+          )}
+          {family.id === 'family2' && (
+            <div className="rounded-xl px-4 py-3" style={{ background: '#fff3e0', border: '1px solid #ffe0b2' }}>
+              <div className="font-nunito text-sm" style={{ color: '#e65100', lineHeight: 1.5 }}>
+                📍 <strong>Walker</strong> is sleeping in Cabin 7592 (Big Yosties)
+              </div>
             </div>
           )}
         </div>
@@ -388,8 +389,8 @@ function ScheduleTab({ family, families, familyPlans, addFamilyPlan, deleteFamil
 
   return (
     <div className="space-y-3">
-      {TRIP_DAYS.map((day, idx) => {
-        const color      = DAY_COLORS[day.type] || 'var(--navy)';
+      {DAYS.map((day, idx) => {
+        const color      = DAY_GRAD[day.type]?.from || 'var(--navy)';
         const isExpanded = expandedDays.has(idx);
         const myPlans    = familyPlans.filter(p => p.familyId === family.id && p.dayIdx === idx);
         const sharedPlans = familyPlans.filter(p =>
@@ -414,7 +415,7 @@ function ScheduleTab({ family, families, familyPlans, addFamilyPlan, deleteFamil
                 </div>
                 <div className="min-w-0">
                   <div className="font-playfair font-bold" style={{ fontSize: '18px', color: 'var(--navy)' }}>
-                    {day.date} — {day.label}
+                    {day.dateShort} — {day.label}
                   </div>
                   {!isExpanded && (myPlans.length > 0 || sharedPlans.length > 0) && (
                     <div className="font-nunito" style={{ fontSize: '12px', color: '#aaa', marginTop: '2px' }}>
@@ -441,6 +442,26 @@ function ScheduleTab({ family, families, familyPlans, addFamilyPlan, deleteFamil
             {/* Expanded content */}
             {isExpanded && (
               <div style={{ borderTop: `2px solid ${color}25` }}>
+
+                {/* Group / cruise schedule events (locked) */}
+                {day.type === 'resort' && day.events.length === 0 ? (
+                  <div className="px-5 py-4 text-center font-nunito text-sm"
+                       style={{ color: '#2e7d32', background: '#f0fdf4', borderBottom: '1px solid #e8f5e9' }}>
+                    🏖️ Free day — enjoy the resort, no group schedule today!
+                  </div>
+                ) : day.events.map((ev, eidx) => (
+                  <div key={eidx} className="flex items-start gap-3 px-5 py-2.5"
+                       style={{ background: '#fafbfc', borderBottom: '1px solid #f0f0f0' }}>
+                    <span className="font-nunito font-bold flex-shrink-0" style={{ fontSize: '11px', color: color, minWidth: '72px', paddingTop: '2px' }}>
+                      {ev.time}
+                    </span>
+                    <div className="flex-1 min-w-0 font-nunito" style={{ fontSize: '13px', color: '#555', lineHeight: 1.4 }}>
+                      {ev.text}
+                    </div>
+                    <span style={{ color: '#ccc', fontSize: '13px', flexShrink: 0, paddingTop: '2px' }}>🔒</span>
+                  </div>
+                ))}
+
                 {myPlans.map(p => (
                   <div key={p.id} className="flex items-start gap-3 px-5 py-3"
                        style={{ borderBottom: '1px solid #f5f5f5' }}>

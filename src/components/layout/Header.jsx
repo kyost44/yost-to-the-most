@@ -4,19 +4,19 @@ import { useAdmin } from '../../contexts/AdminContext';
 
 // 4 primary links visible in the bar
 const PRIMARY_LINKS = [
-  { to: '/',            label: 'Home' },
-  { to: '/todo',        label: 'To-Do' },
-  { to: '/my-yosties',  label: 'My Yosties' },
-  { to: '/calendar',    label: 'Schedule' },
+  { to: '/',             label: 'Home' },
+  { to: '/todo',         label: 'To-Do' },
+  { to: '/need-to-know', label: "Captain's Orders" },
+  { to: '/calendar',     label: 'Schedule' },
 ];
 
 // Links inside the "More ▾" dropdown — with icons for scannability
 const MORE_LINKS = [
-  { to: '/need-to-know',    label: "Captain's Orders",   icon: '⚓' },
-  { to: '/transportation',  label: 'Journey Begins',      icon: '✈️' },
-  { to: '/tshirt',          label: 'Dress Like the Crew', icon: '👕' },
-  { to: '/highlights',      label: 'Hidden Mickeys',      icon: '✨' },
-  { to: '/gallery',         label: 'Photo Gallery',       icon: '📸' },
+  { to: '/my-yosties',   label: 'My Yosties',     icon: '⭐' },
+  { to: '/transportation',label: 'Journey Begins', icon: '✈️' },
+  { to: '/tshirt',       label: 'Suit Up',         icon: '👕' },
+  { to: '/highlights',   label: 'The Magic Aboard',icon: '✨' },
+  { to: '/gallery',      label: 'Photo Gallery',   icon: '📸' },
 ];
 
 const ALL_LINKS = [...PRIMARY_LINKS, ...MORE_LINKS];
@@ -99,7 +99,7 @@ export default function Header() {
               className="font-dancing font-bold leading-none select-none"
               style={{ fontSize: '26px', color: 'var(--gold)', letterSpacing: '-0.5px' }}
             >
-              Yost to the Most
+              Yost Disney Destiny
             </span>
             <span
               className="font-nunito"

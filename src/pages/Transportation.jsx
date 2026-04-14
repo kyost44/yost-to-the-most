@@ -26,10 +26,13 @@ const FAMILIES_META = [
 ];
 
 const CABINS = [
-  { room: '7596', family: 'K-Yosties',        color: '#4a7bc8', res: '43483369', connects: '7598', members: ['Kyle','Kristen','Brielle','Casper'] },
-  { room: '7598', family: 'Beal Yosties',      color: '#b8860b', res: '43483397', connects: '7596', members: ['Jenni','Nat','Ridge','Foxton','Walker'] },
-  { room: '7594', family: 'Zihlmann Yosties',  color: '#c0392b', res: '43483320', connects: '7592', members: ['Julie','Markus','Cohen','Oskar','Skye'] },
-  { room: '7592', family: 'Big Yosties',       color: '#1a7a4a', res: '43483320', connects: '7594', members: ['Tim','Laura'] },
+  { room: '7596', family: 'K-Yosties',       color: '#4a7bc8', res: '43483369', connects: '7598', members: ['Kyle','Kristen','Brielle','Casper'], crossGuests: [] },
+  { room: '7598', family: 'Beal Yosties',    color: '#b8860b', res: '43483397', connects: '7596', members: ['Jenni','Nat','Ridge','Foxton'],       crossGuests: [] },
+  { room: '7594', family: 'Zihlmann Yosties',color: '#c0392b', res: '43483320', connects: '7592', members: ['Julie','Markus','Cohen','Oskar'],     crossGuests: [] },
+  { room: '7592', family: 'Big Yosties',     color: '#1a7a4a', res: '43483320', connects: '7594', members: ['Tim','Laura'],                        crossGuests: [
+    { name: 'Skye',   family: 'Zihlmann', color: '#c0392b' },
+    { name: 'Walker', family: 'Beal',     color: '#b8860b' },
+  ]},
 ];
 
 const JOURNEY_LEGS = [
@@ -447,6 +450,12 @@ function CabinsTab() {
                 {c.members.map(m => (
                   <span key={m} style={{ fontFamily: 'Nunito, sans-serif', fontSize: '11px', fontWeight: 600, background: 'var(--navy)', color: 'white', padding: '3px 10px', borderRadius: '99px' }}>
                     {m}
+                  </span>
+                ))}
+                {(c.crossGuests || []).map(g => (
+                  <span key={g.name} style={{ fontFamily: 'Nunito, sans-serif', fontSize: '11px', fontWeight: 600, background: g.color, color: 'white', padding: '3px 10px', borderRadius: '99px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    {g.name}
+                    <span style={{ opacity: 0.75, fontSize: '10px' }}>({g.family})</span>
                   </span>
                 ))}
               </div>

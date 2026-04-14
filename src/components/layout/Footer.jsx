@@ -14,7 +14,7 @@ export default function Footer() {
           className="font-dancing font-bold mb-2"
           style={{ fontSize: '26px', color: 'var(--gold)' }}
         >
-          Yost to the Most
+          Yost Disney Destiny
         </div>
 
         {/* Subtitle */}

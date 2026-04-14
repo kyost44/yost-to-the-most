@@ -150,7 +150,7 @@ export default function HeroSection() {
             textShadow:    '0 2px 30px rgba(244,196,48,0.25)',
           }}
         >
-          Yost to the Most
+          Yost Disney Destiny
         </h1>
 
         {/* Gold divider line */}

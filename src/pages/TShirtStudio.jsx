@@ -123,7 +123,7 @@ const CHARACTERS = {
 };
 
 const DEFAULT_TAGLINES = [
-  { id: 't1', text: 'Yost to the Most 2026' },
+  { id: 't1', text: 'Yost Disney Destiny 2026' },
   { id: 't2', text: 'Disney Destiny 2026' },
   { id: 't3', text: 'Yosties Cruise Crew 2026' },
 ];
@@ -151,10 +151,14 @@ function GroupDecisions({ isAdmin }) {
   // Voter identity
   const [voterFamily,   setVoterFamily]   = useState(() => loadLocal('apd_voter_family', ''));
   const [voterName,     setVoterName]     = useState(() => loadLocal('apd_voter_name', ''));
-  // Year card
-  const [editYear,  setEditYear]  = useState(false);
-  const [year,      setYear]      = useState(() => loadLocal('apd_cruise_year', '2026'));
-  const [yearInput, setYearInput] = useState(year);
+  // Shirt data for preview panel
+  const [shirtData,     setShirtData]     = useState(() => getShirtData());
+
+  useEffect(() => {
+    const handler = e => setShirtData(e.detail);
+    window.addEventListener('shirtDataUpdated', handler);
+    return () => window.removeEventListener('shirtDataUpdated', handler);
+  }, []);
 
   const familyMembers = VOTER_FAMILIES.find(f => f.label === voterFamily)?.members || [];
   const canVote = voterFamily && voterName;
@@ -234,13 +238,15 @@ function GroupDecisions({ isAdmin }) {
     setResetConfirm(false);
   }
 
-  function handleSaveYear() {
-    setYear(yearInput);
-    saveLocal('apd_cruise_year', yearInput);
-    setEditYear(false);
-  }
-
   const officialTagline = taglines.find(t => t.id === official);
+
+  // Shirt preview computations
+  const colorCounts = {};
+  Object.values(shirtData).forEach(e => { if (e.color) colorCounts[e.color] = (colorCounts[e.color] || 0) + 1; });
+  const topColor = Object.entries(colorCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || '#1B2A4A';
+  const topColorLabel = SHIRT_COLORS.find(c => c.value === topColor)?.label || '';
+  const leaderVoteCount = Math.max(0, ...taglines.map(t => (votes[t.id] || []).length));
+  const leaderId = leaderVoteCount > 0 ? taglines.find(t => (votes[t.id] || []).length === leaderVoteCount)?.id : null;
 
   return (
     <div style={{ background: '#FBF7F0', padding: '40px 24px' }}>
@@ -411,36 +417,52 @@ function GroupDecisions({ isAdmin }) {
             )}
           </div>
 
-          {/* Card 2: Cruise Year */}
-          <div style={{ background: 'white', borderRadius: '16px', padding: '24px', borderLeft: '4px solid #1B2A4A', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontFamily: 'Nunito, sans-serif', fontSize: '10px', color: '#FF6B6B', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 700, marginBottom: '16px' }}>
-              CRUISE YEAR
+          {/* Card 2: Shirt Preview */}
+          <div style={{ background: 'white', borderRadius: '16px', padding: '24px', borderLeft: '4px solid #F4C430', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+            <div style={{ fontFamily: 'Nunito, sans-serif', fontSize: '10px', color: '#FF6B6B', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 700, marginBottom: '14px' }}>
+              SHIRT PREVIEW
             </div>
-            <div style={{ textAlign: 'center' }}>
-              {editYear && isAdmin ? (
-                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '8px' }}>
-                  <input
-                    value={yearInput}
-                    onChange={e => setYearInput(e.target.value)}
-                    style={{ fontFamily: '"Playfair Display", serif', fontWeight: 700, fontSize: '32px', color: '#F4C430', textAlign: 'center', width: '120px', border: '2px solid #F4C430', borderRadius: '8px', padding: '4px 8px', outline: 'none' }}
-                  />
-                  <button onClick={handleSaveYear} style={{ fontFamily: 'Nunito, sans-serif', fontSize: '12px', fontWeight: 700, padding: '8px 14px', borderRadius: '8px', background: '#F4C430', color: '#1B2A4A', border: 'none', cursor: 'pointer', alignSelf: 'center' }}>
-                    Save
-                  </button>
-                </div>
-              ) : (
-                <div style={{ fontFamily: '"Playfair Display", serif', fontWeight: 700, fontSize: '48px', color: '#F4C430', lineHeight: 1, marginBottom: '8px' }}>
-                  {year}
-                </div>
-              )}
-              <p style={{ fontFamily: 'Nunito, sans-serif', fontSize: '12px', color: '#bbb', margin: '0 0 16px' }}>
-                Pre-set for Disney Destiny 2026
-              </p>
-              {isAdmin && !editYear && (
-                <button onClick={() => { setYearInput(year); setEditYear(true); }} style={{ fontFamily: 'Nunito, sans-serif', fontSize: '11px', fontWeight: 700, padding: '5px 14px', borderRadius: '20px', background: 'transparent', color: '#1B2A4A', border: '1px solid #ddd', cursor: 'pointer' }}>
-                  ✏️ Edit Year
-                </button>
-              )}
+
+            {topColorLabel && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', padding: '8px 12px', background: '#f8f9fc', borderRadius: '8px' }}>
+                <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: topColor, border: topColor === '#FFFFFF' ? '1px solid #ccc' : 'none', flexShrink: 0 }} />
+                <span style={{ fontFamily: 'Nunito, sans-serif', fontSize: '12px', color: '#666' }}>
+                  Most popular: <strong>{topColorLabel}</strong>
+                </span>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {taglines.map(t => {
+                const count = (votes[t.id] || []).length;
+                const isLeader = t.id === leaderId;
+                const isOff = t.id === official;
+                return (
+                  <div key={t.id} style={{
+                    display: 'flex', alignItems: 'center', gap: '12px',
+                    padding: '10px 12px', borderRadius: '10px',
+                    background: isOff ? 'rgba(244,196,48,0.1)' : '#f8f9fc',
+                    border: isOff ? '1.5px solid #F4C430' : '1.5px solid transparent',
+                  }}>
+                    {/* CSS shirt shape */}
+                    <div style={{
+                      flexShrink: 0,
+                      width: '52px', height: '44px',
+                      background: topColor,
+                      clipPath: 'polygon(20% 0%, 80% 0%, 100% 18%, 80% 28%, 80% 100%, 20% 100%, 20% 28%, 0% 18%)',
+                      border: topColor === '#FFFFFF' ? '1px solid #e0e0e0' : 'none',
+                    }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontFamily: '"Playfair Display", serif', fontSize: '14px', fontWeight: 700, color: '#1B2A4A', lineHeight: 1.3 }}>
+                        {isOff ? '👑 ' : isLeader && count > 0 ? '⭐ ' : ''}{t.text}
+                      </div>
+                      <div style={{ fontFamily: 'Nunito, sans-serif', fontSize: '11px', color: '#aaa', marginTop: '3px' }}>
+                        {count} vote{count !== 1 ? 's' : ''}{isLeader && count > 0 && !isOff ? ' · Leading!' : ''}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -701,7 +723,7 @@ export default function TShirtStudio() {
         }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ fontFamily: 'Nunito, sans-serif', fontSize: '11px', color: '#F4C430', textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: 700, marginBottom: '8px' }}>
-            👕 YOST TO THE MOST · DISNEY DESTINY 2026
+            👕 YOST DISNEY DESTINY 2026
           </div>
           <h1 style={{ fontFamily: '"Dancing Script", cursive', fontSize: '44px', color: '#F4C430', fontWeight: 700, lineHeight: 1.1, margin: '0 0 10px' }}>
             Suit Up — It's Cruise Time

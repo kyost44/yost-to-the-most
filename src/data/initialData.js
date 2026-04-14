@@ -13,9 +13,9 @@ export const TRIP = {
 
 export const CABINS = [
   { room: '7596', reservation: '43483369', members: ['Kyle', 'Kristen', 'Brielle', 'Casper'],   familyId: 'family1', connects: '7598' },
-  { room: '7598', reservation: '43483397', members: ['Jenni', 'Nat', 'Ridge', 'Foxton', 'Walker'], familyId: 'family2', connects: '7596' },
-  { room: '7594', reservation: '43483320', members: ['Julie', 'Markus', 'Cohen', 'Oskar', 'Skye'], familyId: 'family3', connects: '7592' },
-  { room: '7592', reservation: '43483320', members: ['Tim', 'Laura'],                             familyId: 'family4', connects: '7594' },
+  { room: '7598', reservation: '43483397', members: ['Jenni', 'Nat', 'Ridge', 'Foxton'],          familyId: 'family2', connects: '7596' },
+  { room: '7594', reservation: '43483320', members: ['Julie', 'Markus', 'Cohen', 'Oskar'],        familyId: 'family3', connects: '7592' },
+  { room: '7592', reservation: '43483320', members: ['Tim', 'Laura', 'Skye', 'Walker'],           familyId: 'family4', connects: '7594' },
 ];
 
 export const FAMILIES = [
