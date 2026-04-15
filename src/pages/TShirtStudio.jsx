@@ -3,6 +3,7 @@ import { useData } from '../contexts/DataContext';
 import { useAdmin } from '../contexts/AdminContext';
 import CharacterPickerModal from '../components/CharacterPickerModal';
 import { getShirtData, updatePersonShirt } from '../utils/shirtData';
+import { useFirebaseState } from '../hooks/useFirebaseState';
 
 // ── Error Boundary ────────────────────────────────────────────────────────────
 class ErrorBoundary extends React.Component {
@@ -141,18 +142,20 @@ const VOTER_FAMILIES = [
 // ── Group Decisions ───────────────────────────────────────────────────────────
 
 function GroupDecisions({ isAdmin }) {
-  const [taglines,      setTaglines]      = useState(() => loadLocal('apd_taglines', DEFAULT_TAGLINES));
-  // votes_v2: { [taglineId]: [name, name, ...] }
-  const [votes,         setVotes]         = useState(() => loadLocal('apd_tagline_votes_v2', {}));
-  const [official,      setOfficial]      = useState(() => loadLocal('apd_tagline_official', null));
-  const [customOpen,    setCustomOpen]    = useState(false);
-  const [customText,    setCustomText]    = useState('');
-  const [resetConfirm,  setResetConfirm]  = useState(false);
-  // Voter identity
-  const [voterFamily,   setVoterFamily]   = useState(() => loadLocal('apd_voter_family', ''));
-  const [voterName,     setVoterName]     = useState(() => loadLocal('apd_voter_name', ''));
+  // Shared across all devices via Firebase
+  const [taglines, setTaglines] = useFirebaseState('taglines', DEFAULT_TAGLINES);
+  const [votes,    setVotes]    = useFirebaseState('taglineVotes', {});
+  const [official, setOfficial] = useFirebaseState('taglineOfficial', null);
+
+  // Device-local (who is sitting at this browser)
+  const [customOpen,   setCustomOpen]   = useState(false);
+  const [customText,   setCustomText]   = useState('');
+  const [resetConfirm, setResetConfirm] = useState(false);
+  const [voterFamily,  setVoterFamily]  = useState(() => loadLocal('apd_voter_family', ''));
+  const [voterName,    setVoterName]    = useState(() => loadLocal('apd_voter_name', ''));
+
   // Shirt data for preview panel
-  const [shirtData,     setShirtData]     = useState(() => getShirtData());
+  const [shirtData, setShirtData] = useState(() => getShirtData());
 
   useEffect(() => {
     const handler = e => setShirtData(e.detail);
@@ -186,18 +189,13 @@ function GroupDecisions({ isAdmin }) {
     if (!canVote || official) return;
     setVotes(prev => {
       const next = { ...prev };
-      // Remove from previous vote
       if (myVotedId && myVotedId !== id) {
         next[myVotedId] = (next[myVotedId] || []).filter(n => n !== voterName);
       }
-      // Toggle on clicked option
       const current = next[id] || [];
-      if (current.includes(voterName)) {
-        next[id] = current.filter(n => n !== voterName);
-      } else {
-        next[id] = [...current, voterName];
-      }
-      saveLocal('apd_tagline_votes_v2', next);
+      next[id] = current.includes(voterName)
+        ? current.filter(n => n !== voterName)
+        : [...current, voterName];
       return next;
     });
   }
@@ -207,14 +205,11 @@ function GroupDecisions({ isAdmin }) {
     const id   = 'tc_' + Date.now();
     const next = [...taglines, { id, text: customText.trim() }];
     setTaglines(next);
-    saveLocal('apd_taglines', next);
-    // Auto-vote for suggester
     if (canVote) {
       setVotes(prev => {
         const updated = { ...prev };
         if (myVotedId) updated[myVotedId] = (updated[myVotedId] || []).filter(n => n !== voterName);
         updated[id] = [voterName];
-        saveLocal('apd_tagline_votes_v2', updated);
         return updated;
       });
     }
@@ -222,19 +217,11 @@ function GroupDecisions({ isAdmin }) {
     setCustomOpen(false);
   }
 
-  function handlePin(id) {
-    setOfficial(id);
-    saveLocal('apd_tagline_official', id);
-  }
-
-  function handleUnpin() {
-    setOfficial(null);
-    saveLocal('apd_tagline_official', null);
-  }
+  function handlePin(id)   { setOfficial(id);   }
+  function handleUnpin()   { setOfficial(null);  }
 
   function handleReset() {
     setVotes({});
-    saveLocal('apd_tagline_votes_v2', {});
     setResetConfirm(false);
   }
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAdmin } from '../contexts/AdminContext';
+import { useFirebaseState } from '../hooks/useFirebaseState';
 
 // ── Static Data ───────────────────────────────────────────────────────────────
 
@@ -161,9 +162,9 @@ function BoardingPassHotel({ label, accent, accentLight, name, address, checkIn,
 // ── Tab 2: Flights ────────────────────────────────────────────────────────────
 
 function FlightsTab() {
-  const [flights, setFlights] = useState(() => loadLocal(FLIGHTS_STORAGE_KEY, INITIAL_FLIGHTS));
+  const [flights, setFlights] = useFirebaseState('flights', INITIAL_FLIGHTS);
 
-  function saveFlights(next) { setFlights(next); saveLocal(FLIGHTS_STORAGE_KEY, next); }
+  function saveFlights(next) { setFlights(next); }
 
   return (
     <div>
@@ -313,7 +314,7 @@ function FlightLeg({ label, color, f }) {
 
 function GroundTab() {
   const { isAdmin } = useAdmin();
-  const [ground, setGround] = useState(() => loadLocal(GROUND_STORAGE_KEY, INITIAL_GROUND));
+  const [ground, setGround] = useFirebaseState('ground', INITIAL_GROUND);
   const [editingLeg, setEditingLeg] = useState(null); // { familyId, legKey }
   const [editVal, setEditVal] = useState('');
 
@@ -323,7 +324,7 @@ function GroundTab() {
   }
   function saveLeg() {
     const next = { ...ground, [editingLeg.familyId]: { ...ground[editingLeg.familyId], [editingLeg.legKey]: editVal } };
-    setGround(next); saveLocal(GROUND_STORAGE_KEY, next);
+    setGround(next);
     setEditingLeg(null);
   }
 
