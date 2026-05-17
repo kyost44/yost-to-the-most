@@ -4,6 +4,29 @@ import { useAdmin } from '../contexts/AdminContext';
 import CharacterPickerModal from '../components/CharacterPickerModal';
 import { getShirtData, updatePersonShirt } from '../utils/shirtData';
 import { DAYS, DAY_GRAD } from '../data/scheduleData';
+import { useFirebaseState } from '../hooks/useFirebaseState';
+
+const FLIGHTS_INITIAL = {
+  family1: {
+    status: 'booked',
+    outbound: { airline: 'Breeze Airlines', flight: 'MX1016', from: 'CMH', to: 'FLL', departs: 'July 22 · 9:54 AM', arrives: '1:54 PM FLL' },
+    inbound:  { airline: 'Breeze Airlines', flight: 'MX1017', from: 'FLL', to: 'CMH', departs: 'July 29 · 2:16 PM', arrives: '6:20 PM CMH' },
+    groundNote: 'Uber from FLL with kids + car seats',
+  },
+  family2: { status: 'pending', outbound: null, inbound: null, groundNote: '' },
+  family3: {
+    status: 'booked',
+    outbound: { airline: 'Breeze Airways', flight: 'BZ868',  from: 'CAK', to: 'FLL', departs: 'July 22 · 8:15 AM', arrives: '11:15 AM FLL', seats: '15A, 15C' },
+    inbound:  { airline: 'Breeze Airways', flight: 'BZ1911', from: 'FLL', to: 'RDU', departs: 'July 28 · 7:30 AM', arrives: '11:15 AM RDU (via TLH)', conf: 'H7BEKJ' },
+    groundNote: '',
+  },
+  family4: {
+    status: 'booked',
+    outbound: { airline: 'Breeze Airways', flight: 'BZ868',  from: 'CAK', to: 'FLL', departs: 'July 22 · 8:15 AM', arrives: '11:15 AM FLL', seats: '15A, 15C' },
+    inbound:  { airline: 'Breeze Airways', flight: 'BZ1911', from: 'FLL', to: 'RDU', departs: 'July 28 · 7:30 AM', arrives: '11:15 AM RDU (via TLH)', conf: 'H7BEKJ' },
+    groundNote: '',
+  },
+};
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -32,6 +55,56 @@ const TIME_OPTIONS = [
 // ── Tab 1 — Our Cabin ─────────────────────────────────────────────────────────
 
 // (CharacterPickerModal is imported from src/components/CharacterPickerModal.jsx)
+
+function FamilyFlightSection({ familyId, familyColor }) {
+  const [flights] = useFirebaseState('flights', FLIGHTS_INITIAL);
+  const data = flights[familyId];
+  if (!data) return null;
+
+  if (data.status !== 'booked') {
+    return (
+      <div className="bg-white rounded-2xl p-5 mt-5" style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
+        <h3 className="font-playfair font-bold mb-2" style={{ fontSize: '20px', color: 'var(--navy)' }}>✈️ Our Flights</h3>
+        <div style={{ textAlign: 'center', padding: '20px 0', color: '#bbb', fontFamily: 'Nunito, sans-serif', fontSize: '14px' }}>
+          ✈️ Flight details coming soon — check back shortly!
+        </div>
+      </div>
+    );
+  }
+
+  const { outbound: o, inbound: i, groundNote } = data;
+  const legs = [o && { label: 'OUTBOUND', f: o }, i && { label: 'RETURN', f: i }].filter(Boolean);
+
+  return (
+    <div className="bg-white rounded-2xl p-5 mt-5" style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.08)', borderLeft: `4px solid ${familyColor}` }}>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-playfair font-bold" style={{ fontSize: '20px', color: 'var(--navy)' }}>✈️ Our Flights</h3>
+        <span style={{ fontFamily: 'Nunito, sans-serif', fontSize: '12px', fontWeight: 700, background: '#edfcf2', color: '#22863a', padding: '4px 10px', borderRadius: '99px' }}>✅ Booked</span>
+      </div>
+      {legs.map(({ label, f }) => (
+        <div key={label} style={{ background: '#f8f9fc', borderRadius: '10px', padding: '12px 16px', marginBottom: '10px' }}>
+          <div style={{ fontFamily: 'Nunito, sans-serif', fontSize: '10px', fontWeight: 700, color: familyColor, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>{label}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: '8px' }}>
+            {[['Airline', f.airline], ['Flight', f.flight], ['Route', `${f.from} → ${f.to}`], ['Departs', f.departs]].map(([lbl, val]) => (
+              <div key={lbl}>
+                <div style={{ fontFamily: 'Nunito, sans-serif', fontSize: '10px', color: '#aaa', marginBottom: '2px' }}>{lbl}</div>
+                <div style={{ fontFamily: 'Nunito, sans-serif', fontSize: '13px', fontWeight: 700, color: 'var(--navy)' }}>{val}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ fontFamily: 'Nunito, sans-serif', fontSize: '12px', color: '#999', marginTop: '6px' }}>Arrives: {f.arrives}</div>
+          {f.seats && <div style={{ fontFamily: 'Nunito, sans-serif', fontSize: '12px', color: '#999', marginTop: '2px' }}>Seats: {f.seats}</div>}
+          {f.conf  && <div style={{ fontFamily: 'Nunito, sans-serif', fontSize: '12px', color: '#999', marginTop: '2px' }}>Confirmation: {f.conf}</div>}
+        </div>
+      ))}
+      {groundNote ? (
+        <div style={{ marginTop: '4px', background: '#fffbf0', borderRadius: '8px', padding: '10px 14px', fontFamily: 'Nunito, sans-serif', fontSize: '13px', color: '#7a5c00' }}>
+          🚗 Ground: {groundNote}
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 function CabinTab({ family, cabins, families }) {
   const cabin          = cabins.find(c => c.familyId === family.id);
@@ -148,6 +221,8 @@ function CabinTab({ family, cabins, families }) {
           </p>
         </div>
       </div>
+
+      <FamilyFlightSection familyId={family.id} familyColor={family.light} />
 
       <CharacterPickerModal
         isOpen={!!pickerFor}
@@ -653,6 +728,30 @@ function TShirtTab({ family }) {
         Our Crew's Shirts
       </h2>
 
+      {/* Empty-state nudge when no member has picked a character yet */}
+      {(family.memberNames || []).every(name => !shirtData[name]?.character) && (
+        <div style={{
+          background: '#FFFBF0', borderRadius: '14px', padding: '24px',
+          textAlign: 'center', marginBottom: '20px',
+          border: '1px dashed var(--gold)',
+        }}>
+          <div style={{ fontSize: '40px', marginBottom: '10px' }}>👕</div>
+          <p style={{ fontFamily: 'Nunito, sans-serif', fontSize: '15px', color: '#7a5c00', marginBottom: '14px', lineHeight: 1.6 }}>
+            Head to the Suit Up page to pick your character and shirt color!
+          </p>
+          <a
+            href="/tshirt"
+            style={{
+              display: 'inline-block', background: 'var(--gold)', color: 'var(--navy)',
+              fontFamily: 'Nunito, sans-serif', fontWeight: 700, fontSize: '14px',
+              padding: '10px 24px', borderRadius: '10px', textDecoration: 'none',
+            }}
+          >
+            Go to Suit Up →
+          </a>
+        </div>
+      )}
+
       <div className="space-y-4 mb-6">
         {(family.memberNames || []).map(name => {
           const entry    = shirtData[name] || {};
@@ -797,10 +896,10 @@ function PhotosTab({ family }) {
           </div>
         </div>
         <h3 className="font-playfair font-bold mb-3" style={{ fontSize: '28px', color: 'var(--navy)' }}>
-          Your cruise memories live here
+          Your cruise memories will live here!
         </h3>
-        <p className="font-nunito mb-6" style={{ color: '#888', fontSize: '15px', maxWidth: '340px', margin: '0 auto 24px' }}>
-          {daysLeft > 0 ? `${daysLeft} days until the magic begins!` : 'The adventure is just beginning!'}
+        <p className="font-nunito mb-6" style={{ color: '#888', fontSize: '15px', maxWidth: '360px', margin: '0 auto 24px', lineHeight: 1.6 }}>
+          Upload your favorite moments and tag them by day and family member.
         </p>
         <button
           onClick={() => fileRef.current?.click()}
@@ -956,7 +1055,7 @@ function Dashboard({ family, families, cabins, todos, toggleTodoComplete, family
       </div>
 
       {/* Tab bar */}
-      <div className="flex gap-2 mb-8 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+      <div className="flex gap-2 mb-8 overflow-x-auto pb-1 yosties-tab-bar" style={{ scrollbarWidth: 'none' }}>
         {TABS.map(tab => {
           const active = activeTab === tab.id;
           return (

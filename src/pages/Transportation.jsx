@@ -15,8 +15,18 @@ const INITIAL_FLIGHTS = {
     groundNote: 'Uber from FLL with kids + car seats',
   },
   family2: { status: 'pending', outbound: null, inbound: null, groundNote: '' },
-  family3: { status: 'pending', outbound: null, inbound: null, groundNote: '' },
-  family4: { status: 'pending', outbound: null, inbound: null, groundNote: '' },
+  family3: {
+    status: 'booked',
+    outbound: { airline: 'Breeze Airways', flight: 'BZ868',  from: 'CAK', to: 'FLL', departs: 'July 22 · 8:15 AM', arrives: '11:15 AM FLL', seats: '15A, 15C' },
+    inbound:  { airline: 'Breeze Airways', flight: 'BZ1911', from: 'FLL', to: 'RDU', departs: 'July 28 · 7:30 AM', arrives: '11:15 AM RDU (via TLH)', conf: 'H7BEKJ' },
+    groundNote: '',
+  },
+  family4: {
+    status: 'booked',
+    outbound: { airline: 'Breeze Airways', flight: 'BZ868',  from: 'CAK', to: 'FLL', departs: 'July 22 · 8:15 AM', arrives: '11:15 AM FLL', seats: '15A, 15C' },
+    inbound:  { airline: 'Breeze Airways', flight: 'BZ1911', from: 'FLL', to: 'RDU', departs: 'July 28 · 7:30 AM', arrives: '11:15 AM RDU (via TLH)', conf: 'H7BEKJ' },
+    groundNote: '',
+  },
 };
 
 const FAMILIES_META = [
@@ -271,9 +281,9 @@ function FlightCard({ fam, data, onSave }) {
       background: 'repeating-linear-gradient(135deg, #fffaf8 0px, #fffaf8 10px, #fff5f0 10px, #fff5f0 20px)',
       boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
     }}>
-      <div style={{ fontSize: '40px', marginBottom: '12px', opacity: 0.35 }}>✈️</div>
+      <div style={{ fontSize: '40px', marginBottom: '12px', opacity: 0.55 }}>✈️</div>
       <div style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', fontWeight: 700, color: 'var(--navy)', marginBottom: '8px' }}>{fam.name}</div>
-      <div style={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', color: '#F59E0B', marginBottom: '20px' }}>⏳ Flight Details Pending</div>
+      <div style={{ fontFamily: 'Nunito, sans-serif', fontSize: '14px', color: '#888', marginBottom: '20px' }}>Flight details coming soon — check back shortly!</div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center', marginBottom: '24px' }}>
         {[1, 2, 3].map(i => (
           <div key={i} style={{ width: '80%', height: '2px', background: 'var(--navy)', opacity: 0.12, borderRadius: '1px' }} />
@@ -553,7 +563,7 @@ export default function Transportation() {
 
       {/* ── Tab Bar ── */}
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 32px 0' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(80px, 1fr))', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }} className="transport-tabs">
           {TABS.map(tab => {
             const active = activeTab === tab.id;
             return (

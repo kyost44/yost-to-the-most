@@ -2,57 +2,76 @@ import { useState, useEffect } from 'react';
 import { ref, onValue, set } from 'firebase/database';
 import { db } from '../firebase';
 
+const LS_PREFIX = 'apd_';
+
+function lsGet(path, defaultValue) {
+  try {
+    const raw = localStorage.getItem(LS_PREFIX + path);
+    return raw !== null ? JSON.parse(raw) : defaultValue;
+  } catch {
+    return defaultValue;
+  }
+}
+
+function lsSet(path, value) {
+  try {
+    localStorage.setItem(LS_PREFIX + path, JSON.stringify(value));
+  } catch { /* quota exceeded — ignore */ }
+}
+
+// Firebase RTDB serialises JS arrays as {0: …, 1: …} — this restores them recursively.
+function deepNormalizeArrays(data) {
+  if (data === null || data === undefined || typeof data !== 'object' || Array.isArray(data)) {
+    return data;
+  }
+  const keys = Object.keys(data);
+  const isSerializedArray =
+    keys.length > 0 && keys.every((k, i) => k === String(i));
+  if (isSerializedArray) {
+    return keys.map(k => deepNormalizeArrays(data[k]));
+  }
+  const out = {};
+  for (const k of keys) out[k] = deepNormalizeArrays(data[k]);
+  return out;
+}
+
 /**
  * Drop-in replacement for useState that syncs with Firebase Realtime Database.
- * All clients subscribed to the same path see updates in real time.
- *
- * Usage:
- *   const [todos, setTodos] = useFirebaseState('todos', INITIAL_TODOS);
- *
- * setTodos works exactly like React setState — accepts a value OR a function:
- *   setTodos(newArray)
- *   setTodos(prev => [...prev, newItem])
- *
- * Both forms immediately update local state AND write to Firebase.
+ * Falls back to localStorage when Firebase is not configured (db === null).
  */
 export function useFirebaseState(path, defaultValue) {
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useState(() => (db ? defaultValue : lsGet(path, defaultValue)));
 
   useEffect(() => {
+    if (!db) return; // localStorage mode — nothing to subscribe to
+
     const dbRef = ref(db, path);
 
     const unsub = onValue(dbRef, (snapshot) => {
       const raw = snapshot.val();
 
       if (raw === null || raw === undefined) {
-        // Path is empty — seed Firebase with defaults so every client gets them
         set(dbRef, defaultValue);
         setValue(defaultValue);
-      } else if (
-        Array.isArray(defaultValue) &&
-        typeof raw === 'object' &&
-        !Array.isArray(raw)
-      ) {
-        // Firebase serialises JS arrays as {0: …, 1: …, 2: …} — convert back
-        setValue(Object.values(raw));
       } else {
-        setValue(raw);
+        setValue(deepNormalizeArrays(raw));
       }
     });
 
-    return unsub; // Firebase onValue returns its own unsubscribe fn
+    return unsub;
   }, [path]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  /**
-   * Setter — mirrors React's setState API but also persists to Firebase.
-   */
   function setAndSync(newValueOrUpdater) {
     setValue((prev) => {
       const next =
         typeof newValueOrUpdater === 'function'
           ? newValueOrUpdater(prev)
           : newValueOrUpdater;
-      set(ref(db, path), next ?? null);
+      if (db) {
+        set(ref(db, path), next ?? null);
+      } else {
+        lsSet(path, next ?? null);
+      }
       return next;
     });
   }

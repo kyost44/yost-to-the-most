@@ -4,10 +4,15 @@ import { useData } from '../../contexts/DataContext';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
+function inArr(arr, val) {
+  return Array.isArray(arr) && arr.includes(val);
+}
+
 function getNextDeadline(todos, familyId) {
+  if (!Array.isArray(todos)) return null;
   const now = new Date();
   return todos
-    .filter(t => t.families.includes(familyId) && !t.completedBy.includes(familyId))
+    .filter(t => inArr(t.families, familyId) && !inArr(t.completedBy, familyId))
     .filter(t => new Date(t.deadline) >= now)
     .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))[0] || null;
 }
@@ -47,10 +52,11 @@ function RingProgress({ pct, color, size = 72 }) {
 // ── Featured (selected) family card ──────────────────────────────────────────
 
 function FeaturedFamilyCard({ family, todos }) {
-  const total = todos.filter(t => t.families.includes(family.id)).length;
-  const done  = todos.filter(t => t.completedBy.includes(family.id)).length;
+  const safeTodos = Array.isArray(todos) ? todos : [];
+  const total = safeTodos.filter(t => inArr(t.families, family.id)).length;
+  const done  = safeTodos.filter(t => inArr(t.completedBy, family.id)).length;
   const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
-  const next  = getNextDeadline(todos, family.id);
+  const next  = getNextDeadline(safeTodos, family.id);
   const days  = next ? daysUntil(next.deadline) : null;
   const isOverdue = days !== null && days < 0;
 
@@ -118,8 +124,9 @@ function FeaturedFamilyCard({ family, todos }) {
 // ── Compact family row (non-selected) ────────────────────────────────────────
 
 function CompactFamilyRow({ family, todos }) {
-  const total = todos.filter(t => t.families.includes(family.id)).length;
-  const done  = todos.filter(t => t.completedBy.includes(family.id)).length;
+  const safeTodos = Array.isArray(todos) ? todos : [];
+  const total = safeTodos.filter(t => inArr(t.families, family.id)).length;
+  const done  = safeTodos.filter(t => inArr(t.completedBy, family.id)).length;
   const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
 
   return (
@@ -292,10 +299,11 @@ export default function TodoSummaryWidget() {
 // ── Standard family card (no selection) ──────────────────────────────────────
 
 function FamilyCard({ family, todos }) {
-  const total = todos.filter(t => t.families.includes(family.id)).length;
-  const done  = todos.filter(t => t.completedBy.includes(family.id)).length;
+  const safeTodos = Array.isArray(todos) ? todos : [];
+  const total = safeTodos.filter(t => inArr(t.families, family.id)).length;
+  const done  = safeTodos.filter(t => inArr(t.completedBy, family.id)).length;
   const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
-  const next  = getNextDeadline(todos, family.id);
+  const next  = getNextDeadline(safeTodos, family.id);
   const days  = next ? daysUntil(next.deadline) : null;
   const isOverdue = days !== null && days < 0;
   const isUrgent  = days !== null && days <= 14;

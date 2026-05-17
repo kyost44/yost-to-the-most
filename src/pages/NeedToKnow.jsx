@@ -159,6 +159,21 @@ function PackingContent({ isAdmin }) {
         ))}
       </div>
 
+      {/* Print button */}
+      <div style={{ marginTop: '20px', textAlign: 'right' }}>
+        <button
+          onClick={() => window.print()}
+          className="print-hide"
+          style={{
+            background: 'none', border: '2px solid var(--navy)', color: 'var(--navy)',
+            fontFamily: 'Nunito, sans-serif', fontSize: '14px', fontWeight: 700,
+            padding: '10px 20px', borderRadius: '10px', cursor: 'pointer',
+          }}
+        >
+          🖨️ Print Packing List
+        </button>
+      </div>
+
       {isAdmin && (
         <div style={{ marginTop: '16px' }}>
           {!showAddForm ? (

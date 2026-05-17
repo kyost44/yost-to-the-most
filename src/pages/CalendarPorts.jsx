@@ -159,6 +159,25 @@ function Timeline({ day }) {
                       {tagCfg.label}
                     </span>
                   )}
+                  {ev.exclusive && (
+                    <span style={{
+                      fontFamily: 'Nunito, sans-serif',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em',
+                      background: '#FFF8E1',
+                      color: '#C9A227',
+                      padding: '2px 8px',
+                      borderRadius: '99px',
+                      flexShrink: 0,
+                      alignSelf: 'flex-start',
+                      marginTop: '3px',
+                      border: '1px solid #C9A227',
+                    }}>
+                      ⭐ Destiny Exclusive
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -254,13 +273,13 @@ function CardDeck({ currentIdx, onSelect }) {
         style={{
           position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
           width: '44px', height: '44px', borderRadius: '50%',
-          background: 'white', border: '1px solid #e0e0e0',
+          background: 'white', border: 'none',
           color: 'var(--navy)', fontSize: '18px', fontWeight: 'bold',
           cursor: currentIdx === 0 ? 'not-allowed' : 'pointer',
           opacity: currentIdx === 0 ? 0.3 : 1,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          zIndex: 10, border: 'none',
+          zIndex: 10,
           transition: 'opacity 0.2s',
         }}
         aria-label="Previous day"

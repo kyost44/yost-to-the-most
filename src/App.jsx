@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AdminProvider } from './contexts/AdminContext';
 import { DataProvider } from './contexts/DataContext';
 import Layout from './components/layout/Layout';
+import WelcomeModal from './components/WelcomeModal';
 
 import Home            from './pages/Home';
 import NeedToKnow      from './pages/NeedToKnow';
@@ -34,6 +35,7 @@ export default function App() {
     <BrowserRouter>
       <AdminProvider>
         <DataProvider>
+          <WelcomeModal />
           <Layout>
             <Routes>
               <Route path="/"               element={<Home />} />

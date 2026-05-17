@@ -750,7 +750,7 @@ export default function TShirtStudio() {
 
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(min(180px, calc(50% - 8px)), 1fr))',
                   gap: '36px 16px',
                 }}>
                   {(family.memberNames || []).map((name, i) => (

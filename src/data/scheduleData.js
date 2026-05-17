@@ -2,12 +2,13 @@
 // Single source of truth used by CalendarPorts (Adventure Map) and MyYosties (Schedule Tab)
 
 export const TAG_CONFIG = {
-  flight:   { node: '#1B2A4A', label: 'FLIGHT',   bg: '#e1f5fe', color: '#0277bd' },
-  required: { node: '#FF6B6B', label: 'REQUIRED', bg: '#ffebee', color: '#c62828' },
-  included: { node: '#2ecc71', label: 'INCLUDED', bg: '#edfcf2', color: '#22863a' },
-  food:     { node: '#F4C430', label: 'FOOD',     bg: '#fff8e1', color: '#a16207' },
-  tip:      { node: '#888888', label: 'TIP',      bg: '#f5f5f5', color: '#666666' },
-  show:     { node: '#7b1fa2', label: 'SHOW',     bg: '#f3e5f5', color: '#7b1fa2' },
+  flight:        { node: '#1B2A4A', label: 'FLIGHT',        bg: '#e1f5fe', color: '#0277bd' },
+  required:      { node: '#FF6B6B', label: 'REQUIRED',      bg: '#ffebee', color: '#c62828' },
+  included:      { node: '#2ecc71', label: 'INCLUDED',       bg: '#edfcf2', color: '#22863a' },
+  food:          { node: '#F4C430', label: 'FOOD',           bg: '#fff8e1', color: '#a16207' },
+  tip:           { node: '#888888', label: 'TIP',            bg: '#f5f5f5', color: '#666666' },
+  show:          { node: '#7b1fa2', label: 'SHOW',           bg: '#f3e5f5', color: '#7b1fa2' },
+  entertainment: { node: '#6a1b9a', label: 'ENTERTAINMENT',  bg: '#f3e5f5', color: '#6a1b9a' },
 };
 
 export const DEFAULT_NODE = '#1B2A4A';
@@ -49,8 +50,10 @@ export const DAYS = [
       { time: 'Embark Day',   text: "Enroll kids in Kids Clubs — it's open house day!",        tag: 'tip'      },
       { time: '1:30 PM',      text: 'Staterooms are ready! Great time for unpacking and naps', tag: 'included' },
       { time: '3:00 PM',      text: 'Ship departs Fort Lauderdale'                                              },
-      { time: '4:00 PM',      text: 'Mandatory Muster Drill — all guests required',            tag: 'required' },
-      { time: '5:45 PM',      text: 'Dinner: Rotational Dining',                               tag: 'food'     },
+      { time: '4:00 PM',      text: 'Mandatory Muster Drill — all guests required',            tag: 'required'       },
+      { time: '5:45 PM',      text: 'Dinner: Rotational Dining',                               tag: 'food'           },
+      { time: '7:30 PM',      text: 'Victryphonics — Live musical performance in the Grand Hall', tag: 'entertainment' },
+      { time: '8:30 PM',      text: 'Disney Seas the Adventure — Broadway-style show for the whole family', tag: 'entertainment' },
     ],
   },
   {
@@ -60,8 +63,9 @@ export const DAYS = [
     events: [
       { time: '7:30 AM',  text: 'Breakfast',                                                   tag: 'food'     },
       { time: '8:00 AM',  text: 'Arrive in Nassau, Bahamas',                                   tag: 'included' },
-      { time: '5:30 PM',  text: 'Return to ship',                                              tag: 'required' },
-      { time: '5:45 PM',  text: 'Dinner: Rotational Dining',                                   tag: 'food'     },
+      { time: '5:30 PM',  text: 'Return to ship',                                              tag: 'required'       },
+      { time: '5:45 PM',  text: 'Dinner: Rotational Dining',                                   tag: 'food'           },
+      { time: '8:30 PM',  text: 'Frozen: A Musical Spectacular — Broadway-style fan favorite featuring Elsa and Anna', tag: 'entertainment' },
     ],
   },
   {
@@ -74,8 +78,10 @@ export const DAYS = [
       { time: '9:00 AM',  text: "Scuttle's Cove opens — kids ages 3–12",                      tag: 'included' },
       { time: '12:30 PM', text: 'Lunch on island',                                             tag: 'food'     },
       { time: '3:30 PM',  text: "Scuttle's Cove closes"                                                        },
-      { time: '4:45 PM',  text: 'Return to ship',                                              tag: 'required' },
-      { time: '5:45 PM',  text: 'Dinner: Rotational Dining',                                   tag: 'food'     },
+      { time: '4:45 PM',  text: 'Return to ship',                                              tag: 'required'       },
+      { time: '5:45 PM',  text: 'Dinner: Rotational Dining',                                   tag: 'food'           },
+      { time: '7:30 PM',  text: 'Pirate Night — Deck party on FunnelVision Deck 11 — costume encouraged!', tag: 'entertainment' },
+      { time: '10:00 PM', text: 'Fireworks at Sea — Spectacular fireworks launched from the ship — don\'t miss it!', tag: 'entertainment' },
     ],
   },
   {
@@ -83,9 +89,11 @@ export const DAYS = [
     dateShort: 'July 26', dateLong: 'Sunday, July 26, 2026',
     label: 'Day at Sea',
     events: [
-      { time: '7:30 AM',  text: 'Breakfast',                                                   tag: 'food'     },
-      { time: '12:30 PM', text: 'Lunch',                                                       tag: 'food'     },
-      { time: '5:45 PM',  text: 'Dinner: Rotational Dining',                                   tag: 'food'     },
+      { time: '7:30 AM',  text: 'Breakfast',                                                   tag: 'food'           },
+      { time: '12:30 PM', text: 'Lunch',                                                       tag: 'food'           },
+      { time: '2:30 PM',  text: 'Disney Hercules — Brand-new Broadway musical exclusive to Disney Destiny!', tag: 'entertainment', exclusive: true },
+      { time: '5:45 PM',  text: 'Dinner: Rotational Dining',                                   tag: 'food'           },
+      { time: '8:30 PM',  text: 'Disney Hercules — Second showing — another chance to see this exclusive show!', tag: 'entertainment', exclusive: true },
     ],
   },
   {

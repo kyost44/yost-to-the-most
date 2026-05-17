@@ -1,18 +1,24 @@
 import { initializeApp } from 'firebase/app';
 import { getDatabase } from 'firebase/database';
 
-// ─── PASTE YOUR FIREBASE CONFIG HERE ─────────────────────────────────────────
-// Firebase Console → Project Settings → Your apps → Web app → SDK setup & config
 const firebaseConfig = {
-  apiKey:            "REPLACE_ME",
-  authDomain:        "REPLACE_ME",
-  databaseURL:       "REPLACE_ME",
-  projectId:         "REPLACE_ME",
-  storageBucket:     "REPLACE_ME",
-  messagingSenderId: "REPLACE_ME",
-  appId:             "REPLACE_ME",
+  apiKey:            "AIzaSyCDbFDobkgsf1Wg_rYqQYaZv9vNaCp-9CQ",
+  authDomain:        "yost-disney-destiny.firebaseapp.com",
+  databaseURL:       "https://yost-disney-destiny-default-rtdb.firebaseio.com",
+  projectId:         "yost-disney-destiny",
+  storageBucket:     "yost-disney-destiny.firebasestorage.app",
+  messagingSenderId: "808741588372",
+  appId:             "1:808741588372:web:a619ebcb8ce6d783521381",
 };
-// ─────────────────────────────────────────────────────────────────────────────
 
-const app = initializeApp(firebaseConfig);
-export const db = getDatabase(app);
+let db = null;
+
+try {
+  const app = initializeApp(firebaseConfig);
+  db = getDatabase(app);
+} catch (err) {
+  console.warn('Firebase failed to initialize — falling back to localStorage.', err);
+}
+
+export { db };
+export default db;

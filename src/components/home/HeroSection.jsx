@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 // Departure: July 23, 2026 at 3:00 PM
 const DEPARTURE = new Date('2026-07-23T15:00:00');
@@ -200,6 +201,36 @@ export default function HeroSection() {
             }}
           >
             July 23 – July 27, 2026 · Fort Lauderdale
+          </p>
+        </div>
+
+        {/* Start Here CTA */}
+        <div className="hero-fade-in" style={{ marginTop: '28px', animationDelay: '0.75s' }}>
+          <Link
+            to="/my-yosties"
+            style={{
+              display: 'inline-block',
+              background: 'var(--gold)',
+              color: 'var(--navy)',
+              fontFamily: '"Dancing Script", cursive',
+              fontSize: '18px',
+              fontWeight: 700,
+              padding: '16px 40px',
+              borderRadius: '12px',
+              textDecoration: 'none',
+              animation: 'hero-pulse 2s ease-in-out infinite',
+              boxShadow: '0 4px 24px rgba(244,196,48,0.35)',
+            }}
+          >
+            Start Here → Select Your Family
+          </Link>
+          <p style={{
+            fontFamily: 'Nunito, sans-serif',
+            fontSize: '13px',
+            color: 'rgba(255,255,255,0.7)',
+            marginTop: '10px',
+          }}>
+            New here? This is where to begin
           </p>
         </div>
       </div>

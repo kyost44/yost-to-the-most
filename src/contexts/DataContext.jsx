@@ -24,14 +24,15 @@ export function DataProvider({ children }) {
   }, [setFamilies]);
 
   const toggleTodoComplete = useCallback((todoId, familyId) => {
-    setTodos(prev => prev.map(t => {
+    setTodos(prev => (Array.isArray(prev) ? prev : []).map(t => {
       if (t.id !== todoId) return t;
-      const already = t.completedBy.includes(familyId);
+      const completedBy = Array.isArray(t.completedBy) ? t.completedBy : [];
+      const already = completedBy.includes(familyId);
       return {
         ...t,
         completedBy: already
-          ? t.completedBy.filter(f => f !== familyId)
-          : [...t.completedBy, familyId],
+          ? completedBy.filter(f => f !== familyId)
+          : [...completedBy, familyId],
       };
     }));
   }, [setTodos]);

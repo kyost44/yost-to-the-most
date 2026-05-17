@@ -22,34 +22,33 @@ const DEFAULT_DATA = {
   Laura:   { character: null,     color: null,       size: null       },
 };
 
-// Module-level cache — kept in sync by a single Firebase listener.
+// Module-level cache — kept in sync by a Firebase listener (when available).
 // Synchronous reads (getShirtData) draw from this cache.
 let _cache = { ...DEFAULT_DATA };
 
-// Subscribe once when the module first loads.
-onValue(ref(db, SHIRT_PATH), (snapshot) => {
-  const stored = snapshot.val();
+// Subscribe once when the module first loads — only when Firebase is configured.
+if (db) {
+  onValue(ref(db, SHIRT_PATH), (snapshot) => {
+    const stored = snapshot.val();
 
-  if (!stored) {
-    // Nothing in Firebase yet — seed with defaults
-    set(ref(db, SHIRT_PATH), DEFAULT_DATA);
-    _cache = { ...DEFAULT_DATA };
-  } else {
-    // Merge Firebase data on top of defaults so all 16 names always exist
-    const merged = { ...DEFAULT_DATA };
-    Object.keys(DEFAULT_DATA).forEach((name) => {
-      if (stored[name]) {
-        merged[name] = { ...DEFAULT_DATA[name], ...stored[name] };
-      }
-    });
-    _cache = merged;
-  }
+    if (!stored) {
+      set(ref(db, SHIRT_PATH), DEFAULT_DATA);
+      _cache = { ...DEFAULT_DATA };
+    } else {
+      const merged = { ...DEFAULT_DATA };
+      Object.keys(DEFAULT_DATA).forEach((name) => {
+        if (stored[name]) {
+          merged[name] = { ...DEFAULT_DATA[name], ...stored[name] };
+        }
+      });
+      _cache = merged;
+    }
 
-  // Notify every component that's listening for shirt changes
-  window.dispatchEvent(
-    new CustomEvent('shirtDataUpdated', { detail: { ..._cache } })
-  );
-});
+    window.dispatchEvent(
+      new CustomEvent('shirtDataUpdated', { detail: { ..._cache } })
+    );
+  });
+}
 
 /** Returns a snapshot of the current shirt data (synchronous, from cache). */
 export function getShirtData() {
@@ -66,7 +65,9 @@ export async function updatePersonShirt(name, updates) {
   window.dispatchEvent(
     new CustomEvent('shirtDataUpdated', { detail: { ..._cache } })
   );
-  await update(ref(db, `${SHIRT_PATH}/${name}`), updates);
+  if (db) {
+    await update(ref(db, `${SHIRT_PATH}/${name}`), updates);
+  }
 }
 
 /** Convenience accessor for a single person. */
