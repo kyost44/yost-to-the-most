@@ -19,19 +19,30 @@ function lsSet(path, value) {
   } catch { /* quota exceeded — ignore */ }
 }
 
-// Firebase RTDB serialises JS arrays as {0: …, 1: …} — this restores them recursively.
-function deepNormalizeArrays(data) {
+// Firebase RTDB serialises JS arrays as {0:…,1:…} and omits empty arrays as null.
+// `template` is the defaultValue (or a sub-value) so we know which null fields should be [].
+function deepNormalizeArrays(data, template) {
+  // null/undefined where an array is expected → return []
+  if ((data === null || data === undefined) && Array.isArray(template)) return [];
   if (data === null || data === undefined || typeof data !== 'object' || Array.isArray(data)) {
     return data;
   }
   const keys = Object.keys(data);
-  const isSerializedArray =
-    keys.length > 0 && keys.every((k, i) => k === String(i));
-  if (isSerializedArray) {
-    return keys.map(k => deepNormalizeArrays(data[k]));
+  // Firebase-serialised array: all consecutive integer keys 0..n-1
+  const isSerializedArray = keys.length > 0 && keys.every((k, i) => k === String(i));
+  // Empty plain object that should be an array
+  if (isSerializedArray || (keys.length === 0 && Array.isArray(template))) {
+    const itemTemplate = Array.isArray(template) ? template[0] : undefined;
+    return keys.map(k => deepNormalizeArrays(data[k], itemTemplate));
   }
+  // Plain object — recurse with per-field templates
   const out = {};
-  for (const k of keys) out[k] = deepNormalizeArrays(data[k]);
+  for (const k of keys) {
+    const fieldTpl = (template && typeof template === 'object' && !Array.isArray(template))
+      ? template[k]
+      : undefined;
+    out[k] = deepNormalizeArrays(data[k], fieldTpl);
+  }
   return out;
 }
 
@@ -54,7 +65,7 @@ export function useFirebaseState(path, defaultValue) {
         set(dbRef, defaultValue);
         setValue(defaultValue);
       } else {
-        setValue(deepNormalizeArrays(raw));
+        setValue(deepNormalizeArrays(raw, defaultValue));
       }
     });
 

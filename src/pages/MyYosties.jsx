@@ -250,9 +250,12 @@ function RingProgress({ pct, color, size = 80 }) {
   );
 }
 
+const toArr = v => (Array.isArray(v) ? v : []);
+
 function TodoTab({ family, todos, toggleTodoComplete }) {
-  const myTodos   = todos.filter(t => t.families.includes(family.id));
-  const doneCount = myTodos.filter(t => t.completedBy.includes(family.id)).length;
+  const safeTodos = Array.isArray(todos) ? todos : [];
+  const myTodos   = safeTodos.filter(t => toArr(t.families).includes(family.id));
+  const doneCount = myTodos.filter(t => toArr(t.completedBy).includes(family.id)).length;
   const pct       = myTodos.length > 0 ? Math.round((doneCount / myTodos.length) * 100) : 0;
 
   const [animatingOut,  setAnimatingOut]  = useState(new Set());
@@ -260,12 +263,13 @@ function TodoTab({ family, todos, toggleTodoComplete }) {
 
   // Tasks still in active list: not done OR currently animating out
   const remaining = myTodos
-    .filter(t => !t.completedBy.includes(family.id) || animatingOut.has(t.id))
+    .filter(t => !toArr(t.completedBy).includes(family.id) || animatingOut.has(t.id))
     .sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
-  const completed = myTodos.filter(t => t.completedBy.includes(family.id) && !animatingOut.has(t.id));
+  const completed = myTodos.filter(t => toArr(t.completedBy).includes(family.id) && !animatingOut.has(t.id));
 
   function handleCheck(todoId) {
-    const isDone = todos.find(t => t.id === todoId)?.completedBy.includes(family.id);
+    const found = safeTodos.find(t => t.id === todoId);
+    const isDone = toArr(found?.completedBy).includes(family.id);
     if (!isDone) {
       toggleTodoComplete(todoId, family.id);
       setAnimatingOut(prev => new Set([...prev, todoId]));

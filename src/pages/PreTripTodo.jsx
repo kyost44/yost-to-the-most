@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useData } from '../contexts/DataContext';
 
+// Belt-and-suspenders: Firebase can return null for empty arrays
+const toArr = v => (Array.isArray(v) ? v : []);
+
 // ── Date helpers ───────────────────────────────────────────────────────────────
 
 function daysUntil(dateStr) {
@@ -23,10 +26,12 @@ function getGroup(deadline) {
 
 // Task is "done" in the current filter context
 function isTaskDone(todo, filterId) {
+  const families     = toArr(todo.families);
+  const completedBy  = toArr(todo.completedBy);
   if (filterId === 'all') {
-    return todo.families.length > 0 && todo.families.every(fid => todo.completedBy.includes(fid));
+    return families.length > 0 && families.every(fid => completedBy.includes(fid));
   }
-  return todo.completedBy.includes(filterId);
+  return completedBy.includes(filterId);
 }
 
 // ── Accordion group definitions ────────────────────────────────────────────────
@@ -60,8 +65,9 @@ function RingProgress({ pct, color, size = 56 }) {
 // ── Family progress card (header row) ─────────────────────────────────────────
 
 function FamilyProgressCard({ family, todos }) {
-  const mine  = todos.filter(t => t.families.includes(family.id));
-  const done  = mine.filter(t => t.completedBy.includes(family.id)).length;
+  const safeTodos = Array.isArray(todos) ? todos : [];
+  const mine  = safeTodos.filter(t => toArr(t.families).includes(family.id));
+  const done  = mine.filter(t => toArr(t.completedBy).includes(family.id)).length;
   const pct   = mine.length > 0 ? Math.round((done / mine.length) * 100) : 0;
   return (
     <div
@@ -96,7 +102,7 @@ function FamilyProgressCard({ family, todos }) {
 
 function FamilyDots({ familyIds, families }) {
   const [show, setShow] = useState(false);
-  const assigned = families.filter(f => familyIds.includes(f.id));
+  const assigned = families.filter(f => toArr(familyIds).includes(f.id));
   if (!assigned.length) return null;
   return (
     <div
@@ -147,9 +153,11 @@ function TaskRow({ todo, families, filterId, onToggle }) {
   function handleClick() {
     if (filterId === 'all') {
       // In All-Families view: mark/unmark ALL assigned families at once
-      const allDone = todo.families.every(fid => todo.completedBy.includes(fid));
-      todo.families.forEach(fid => {
-        const familyDone = todo.completedBy.includes(fid);
+      const families    = toArr(todo.families);
+      const completedBy = toArr(todo.completedBy);
+      const allDone = families.every(fid => completedBy.includes(fid));
+      families.forEach(fid => {
+        const familyDone = completedBy.includes(fid);
         // If currently all done → unmark those that are done
         // If not all done → mark those that aren't done yet
         if (allDone ? familyDone : !familyDone) {
@@ -395,9 +403,10 @@ export default function PreTripTodo() {
   const [filterId, setFilterId] = useState('all');
 
   // Apply family filter
+  const safeTodos = Array.isArray(todos) ? todos : [];
   const visible = filterId === 'all'
-    ? todos
-    : todos.filter(t => t.families.includes(filterId));
+    ? safeTodos
+    : safeTodos.filter(t => toArr(t.families).includes(filterId));
 
   // Split into active and done
   const doneTasks   = visible.filter(t =>  isTaskDone(t, filterId));
