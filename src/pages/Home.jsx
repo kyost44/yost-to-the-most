@@ -1,6 +1,6 @@
 import HeroSection from '../components/home/HeroSection';
 import TodoSummaryWidget from '../components/home/TodoSummaryWidget';
-import KristensTop3 from '../components/home/KristensTop3';
+import CheckInCheatSheet from '../components/home/CheckInCheatSheet';
 import NavButtons from '../components/home/NavButtons';
 
 export default function Home() {
@@ -12,8 +12,8 @@ export default function Home() {
       {/* Mission Control — family to-do progress */}
       <TodoSummaryWidget />
 
-      {/* Kristen's Top 3 — most important actions this week */}
-      <KristensTop3 />
+      {/* Check-In Cheat Sheet + article summary */}
+      <CheckInCheatSheet />
 
       {/* Explore the Magic — 3 featured page cards */}
       <NavButtons />

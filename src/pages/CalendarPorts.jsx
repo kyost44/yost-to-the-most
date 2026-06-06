@@ -7,21 +7,37 @@ const SHOWS = [
     emoji: '🎭', title: 'Disney Hercules',
     desc: 'Brand-new Broadway-style musical — exclusive to Disney Destiny. Zero to hero on the high seas!',
     exclusive: true,
+    when: 'July 26 · 2:30–3:45 PM & 8:30–9:15 PM',
   },
   {
-    emoji: '🎭', title: 'Frozen: A Musical Spectacular',
+    emoji: '❄️', title: 'Frozen: A Musical Spectacular',
     desc: 'Broadway-style fan favorite. Perfect for the whole Yosties crew!',
     exclusive: false,
+    when: 'July 24 · 8:30–9:45 PM',
   },
   {
     emoji: '🎭', title: 'Disney Seas the Adventure',
     desc: 'Fun Broadway-style show celebrating the magic of Disney at sea.',
     exclusive: false,
+    when: 'July 23 · 8:30–9:15 PM',
+  },
+  {
+    emoji: '🎵', title: 'Victrophonics',
+    desc: 'Live musical performance in the Grand Hall.',
+    exclusive: false,
+    when: 'July 23 · 10:00–10:30 PM',
   },
   {
     emoji: '🏴‍☠️', title: 'Pirate Night + Fireworks at Sea',
-    desc: 'Deck party on FunnelVision Deck 11. Costume encouraged! Fireworks ~10 PM. Earlier pirate events for little ones.',
+    desc: 'Deck party on FunnelVision Deck 11. Costume encouraged! Fireworks 10:15 PM. Earlier pirate events for little ones.',
     exclusive: false,
+    when: 'July 25 · Kids Party 7:30 PM · Fireworks 10:15 PM',
+  },
+  {
+    emoji: '🎉', title: 'Farewell Party',
+    desc: 'A festive farewell celebration to close out your Disney Destiny voyage — details via the Navigator app.',
+    exclusive: false,
+    when: 'July 26 · 10:15 PM',
   },
 ];
 
@@ -473,7 +489,7 @@ function BroadwayShows() {
           fontSize: '13px',
           color: 'rgba(255,255,255,0.7)',
         }}>
-          Happening aboard Disney Destiny · Days 2–5 · Check the Navigator App for exact times
+          Happening aboard Disney Destiny · July 23–26 · Check the Navigator App for full schedules
         </div>
       </div>
 
@@ -557,18 +573,20 @@ function ShowCard({ show }) {
 
       {/* Badges row */}
       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
-        <span style={{
-          fontFamily: 'Nunito, sans-serif',
-          fontSize: '11px',
-          fontWeight: 700,
-          background: '#FF6B6B',
-          color: 'white',
-          padding: '3px 10px',
-          borderRadius: '99px',
-          letterSpacing: '0.04em',
-        }}>
-          Days 2–5 · Check Navigator App
-        </span>
+        {show.when && (
+          <span style={{
+            fontFamily: 'Nunito, sans-serif',
+            fontSize: '11px',
+            fontWeight: 700,
+            background: '#FF6B6B',
+            color: 'white',
+            padding: '3px 10px',
+            borderRadius: '99px',
+            letterSpacing: '0.04em',
+          }}>
+            📅 {show.when}
+          </span>
+        )}
         {show.exclusive && (
           <span style={{
             fontFamily: 'Nunito, sans-serif',

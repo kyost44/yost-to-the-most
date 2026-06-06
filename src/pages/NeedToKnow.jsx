@@ -18,24 +18,14 @@ const DEFAULT_NTK = [
     due: 'June 23, 2026',
   },
   {
-    id: 'ntk_nursery',
-    icon: '👶',
-    iconBg: '#E8F4FF',
-    iconColor: '#2E86C1',
-    title: "Book Casper's Nursery by May 9, 2026",
-    body: "It's a Small World Nursery (ages 6 months–3 years) has limited spots. Book as soon as the window opens — May 9. This is a paid babysitting service; without a reservation there may be no childcare available.",
-    priority: 'urgent',
-    due: 'May 9, 2026',
-  },
-  {
     id: 'ntk_passports',
     icon: '📘',
     iconBg: '#E8EEF8',
     iconColor: '#1B2A4A',
-    title: 'Passports required — valid through Jan 27, 2027',
-    body: 'Every traveler including children needs a valid passport for Nassau & Castaway Cay. Must be valid at least 6 months past the return date. Allow 8–12 weeks for standard processing if renewing.',
-    priority: 'urgent',
-    due: 'Apr 23, 2026',
+    title: 'Passports — Highly Recommended for All Travelers',
+    body: "Passports are strongly recommended for all travelers. If traveling without a passport, an original birth certificate is required for all children. Walker Beal will need his driver's license as a valid government-issued ID. Passports must be valid at least 6 months past the return date (through January 27, 2027). Allow 8–12 weeks for standard processing if renewing.",
+    priority: 'important',
+    due: 'Passports valid through Jan 27, 2027',
   },
   {
     id: 'ntk_castaway',
@@ -60,7 +50,7 @@ const DEFAULT_NTK = [
 ];
 
 const DEFAULT_PACKING_TIPS = [
-  { id: 'pt_1',  icon: '🍷',    tip: 'Alcohol must be in carry-on: 2 bottles of wine or a 6-pack of 12oz beers per adult. No spirits.' },
+  { id: 'pt_1',  icon: '🍷',    tip: 'Alcohol **MUST be in your carry-on bag** — NOT checked luggage. Limit is 1 bottle of wine or a 6-pack of 12oz beers per adult. No spirits permitted.' },
   { id: 'pt_2',  icon: '👙',    tip: 'Pack a bathing suit AND a dinner outfit in your carry-on — checked bags may not arrive before dinner on embarkation day.' },
   { id: 'pt_3',  icon: '🧲',    tip: 'Magnetic hooks for stateroom organization — cabin walls are metal. Bring 4–6.' },
   { id: 'pt_4',  icon: '🛒',    tip: 'Only sealed/packaged snacks are allowed onboard. Stock up at the Publix near Embassy Suites (12-min walk).' },
@@ -77,8 +67,9 @@ const DEFAULT_PACKING_TIPS = [
   { id: 'pt_15', icon: '🔌',    tip: 'No surge protectors or extension cords allowed. Octopus/multi-outlet adapters are OK.' },
   { id: 'pt_16', icon: '👟',    tip: "Over-the-door shoe organizers work great for kids' items, hung via magnetic hooks." },
   { id: 'pt_17', icon: '😴',    tip: 'Bring a white noise machine — cabin hallways can be noisy.' },
-  { id: 'pt_18', icon: '🤐',    tip: 'Zip-lock bags are great for bringing snacks back to your room from the buffet.' },
-  { id: 'pt_19', icon: '💰',    tip: 'Zip-lock bags also protect electronics and valuables on water excursion days.' },
+  { id: 'pt_18', icon: '🤐',    tip: 'Zip-lock bags are great for bringing snacks back to your room from the buffet AND for protecting electronics and valuables on water excursion days — pack several sizes' },
+  { id: 'pt_20', icon: '👟',    tip: 'Water shoes or Crocs are highly recommended for everyone — the pool deck gets extremely hot and they\'re essential for beach days at Nassau and Castaway Cay' },
+  { id: 'pt_21', icon: '☕',    tip: 'The ship\'s coffee leaves something to be desired — bring your own instant coffee packets if you\'re particular about your morning brew' },
 ];
 
 const SPARKLES = [
@@ -113,6 +104,16 @@ function loadLocal(key, fallback) {
   catch { return fallback; }
 }
 function saveLocal(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+// Renders **bold** markers inside tip text
+function renderTip(text) {
+  const parts = text.split(/\*\*(.*?)\*\*/g);
+  return parts.map((part, i) =>
+    i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+  );
+}
 
 // ── Accordion Content ─────────────────────────────────────────────────────────
 
@@ -153,7 +154,7 @@ function PackingContent({ isAdmin }) {
             )}
             <div style={{ fontSize: '28px', marginBottom: '10px', lineHeight: 1 }}>{t.icon}</div>
             <p style={{ fontFamily: 'Nunito, sans-serif', fontSize: '15px', color: '#2C2C2C', lineHeight: 1.6, margin: 0 }}>
-              {t.tip}
+              {renderTip(t.tip)}
             </p>
           </div>
         ))}
@@ -320,7 +321,7 @@ function TippingContent() {
 // ── Accordion ─────────────────────────────────────────────────────────────────
 
 const ACCORDION_SECTIONS = [
-  { id: 'packing',    icon: '🎒', title: 'Packing Tips',               teaser: '19 must-know tips for packing smart' },
+  { id: 'packing',    icon: '🎒', title: 'Packing Tips',               teaser: '20 must-know tips for packing smart' },
   { id: 'app',        icon: '📱', title: 'Must-Download: Navigator App', teaser: 'Your onboard lifeline — download before you leave' },
   { id: 'dining',     icon: '🍽️', title: 'Dining Tips',                 teaser: 'Rotational dining, specialty restaurants & what to book' },
   { id: 'gratuities', icon: '💰', title: 'Tipping Guide',               teaser: "What's pre-charged and suggested amounts per role" },

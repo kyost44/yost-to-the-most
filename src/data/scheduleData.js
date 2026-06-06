@@ -51,9 +51,9 @@ export const DAYS = [
       { time: '1:30 PM',      text: 'Staterooms are ready! Great time for unpacking and naps', tag: 'included' },
       { time: '3:00 PM',      text: 'Ship departs Fort Lauderdale'                                              },
       { time: '4:00 PM',      text: 'Mandatory Muster Drill — all guests required',            tag: 'required'       },
-      { time: '5:45 PM',      text: 'Dinner: Rotational Dining',                               tag: 'food'           },
-      { time: '7:30 PM',      text: 'Victryphonics — Live musical performance in the Grand Hall', tag: 'entertainment' },
-      { time: '8:30 PM',      text: 'Disney Seas the Adventure — Broadway-style show for the whole family', tag: 'entertainment' },
+      { time: '5:45 PM',           text: 'Dinner: Rotational Dining',                                                                   tag: 'food'           },
+      { time: '8:30 PM – 9:15 PM', text: 'Disney Seas the Adventure — Broadway-style show for the whole family',                    tag: 'entertainment'  },
+      { time: '10:00 PM – 10:30 PM', text: 'Victrophonics — Live musical performance in the Grand Hall',                           tag: 'entertainment'  },
     ],
   },
   {
@@ -65,7 +65,7 @@ export const DAYS = [
       { time: '8:00 AM',  text: 'Arrive in Nassau, Bahamas',                                   tag: 'included' },
       { time: '5:30 PM',  text: 'Return to ship',                                              tag: 'required'       },
       { time: '5:45 PM',  text: 'Dinner: Rotational Dining',                                   tag: 'food'           },
-      { time: '8:30 PM',  text: 'Frozen: A Musical Spectacular — Broadway-style fan favorite featuring Elsa and Anna', tag: 'entertainment' },
+      { time: '8:30 PM – 9:45 PM',  text: 'Frozen: A Musical Spectacular — Broadway-style fan favorite featuring Elsa and Anna', tag: 'entertainment' },
     ],
   },
   {
@@ -80,8 +80,8 @@ export const DAYS = [
       { time: '3:30 PM',  text: "Scuttle's Cove closes"                                                        },
       { time: '4:45 PM',  text: 'Return to ship',                                              tag: 'required'       },
       { time: '5:45 PM',  text: 'Dinner: Rotational Dining',                                   tag: 'food'           },
-      { time: '7:30 PM',  text: 'Pirate Night — Deck party on FunnelVision Deck 11 — costume encouraged!', tag: 'entertainment' },
-      { time: '10:00 PM', text: 'Fireworks at Sea — Spectacular fireworks launched from the ship — don\'t miss it!', tag: 'entertainment' },
+      { time: '7:30 PM – Kids Pirate Party',      text: 'Pirate Night — Kids Pirate Party begins at 7:30 PM · Pirate Show and Fireworks at 10:15 PM', tag: 'entertainment' },
+      { time: '10:15 PM – Pirate Show & Fireworks', text: 'Fireworks at Sea — Spectacular fireworks launched from the ship — don\'t miss it!',              tag: 'entertainment' },
     ],
   },
   {
@@ -91,9 +91,10 @@ export const DAYS = [
     events: [
       { time: '7:30 AM',  text: 'Breakfast',                                                   tag: 'food'           },
       { time: '12:30 PM', text: 'Lunch',                                                       tag: 'food'           },
-      { time: '2:30 PM',  text: 'Disney Hercules — Brand-new Broadway musical exclusive to Disney Destiny!', tag: 'entertainment', exclusive: true },
-      { time: '5:45 PM',  text: 'Dinner: Rotational Dining',                                   tag: 'food'           },
-      { time: '8:30 PM',  text: 'Disney Hercules — Second showing — another chance to see this exclusive show!', tag: 'entertainment', exclusive: true },
+      { time: '2:30 PM – 3:45 PM', text: 'Disney Hercules — Brand-new Broadway musical exclusive to Disney Destiny!',              tag: 'entertainment', exclusive: true },
+      { time: '5:45 PM',          text: 'Dinner: Rotational Dining',                                                                tag: 'food'           },
+      { time: '8:30 PM – 9:15 PM', text: 'Disney Hercules — Second showing — another chance to see this exclusive show!',          tag: 'entertainment', exclusive: true },
+      { time: '10:15 PM',          text: 'Farewell Party 🎉 — A festive farewell celebration to close out your Disney Destiny voyage — details via the Navigator app', tag: 'entertainment' },
     ],
   },
   {
