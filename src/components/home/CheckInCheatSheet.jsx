@@ -70,8 +70,7 @@ export default function CheckInCheatSheet() {
             {[
               'Earlier check-in = earlier Port Arrival Time = earlier boarding — be ready at midnight EST',
               'Have your passport, a plain-background headshot for each traveler, hotel info, flight info, and a credit card on hand',
-              'Book Royal Gathering, Palo Steakhouse, and Enchanté the same day — they fill up fast',
-              'You can complete check-in on the Disney Cruise Line website or the Navigator app',
+              'You can complete check-in on the Disney Cruise Line website',
             ].map((bullet, i) => (
               <li key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                 <span style={{ color: 'var(--gold)', fontSize: '18px', lineHeight: 1.4, flexShrink: 0 }}>✦</span>
