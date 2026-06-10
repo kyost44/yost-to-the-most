@@ -28,14 +28,14 @@ const DEFAULT_NTK = [
     due: 'Passports valid through Jan 27, 2027',
   },
   {
-    id: 'ntk_castaway',
-    icon: '🏝️',
-    iconBg: '#E0F5F5',
-    iconColor: '#0E7C7B',
-    title: 'Castaway Cay excursions sell out fast',
-    body: 'Bike rentals, snorkeling gear, and the Castaway Cay 5K run sell out months in advance. Book through the DCL Navigator app or disneycruise.com as soon as excursions open.',
+    id: 'ntk_special_requests',
+    icon: '📋',
+    iconBg: '#F3E8FF',
+    iconColor: '#7B2FBE',
+    title: 'Submit Special Requests Before Sailing',
+    body: 'Log in to your Disney Cruise Line account and submit any special requests for your stateroom and dining — this includes food allergies, booster seats, bed rails, large print menus, and any other accessibility or dietary needs. Do this as early as possible to ensure everything is arranged before you board.',
     priority: 'important',
-    due: 'July 1, 2026',
+    due: 'July 23, 2026',
   },
   {
     id: 'ntk_app',
@@ -70,6 +70,9 @@ const DEFAULT_PACKING_TIPS = [
   { id: 'pt_18', icon: '🤐',    tip: 'Zip-lock bags are great for bringing snacks back to your room from the buffet AND for protecting electronics and valuables on water excursion days — pack several sizes' },
   { id: 'pt_20', icon: '👟',    tip: 'Water shoes or Crocs are highly recommended for everyone — the pool deck gets extremely hot and they\'re essential for beach days at Nassau and Castaway Cay' },
   { id: 'pt_21', icon: '☕',    tip: 'The ship\'s coffee leaves something to be desired — bring your own instant coffee packets if you\'re particular about your morning brew' },
+  { id: 'pt_22', icon: '🧴',    tip: 'Pack tear-free shampoo for little ones — the ship provides adult shampoo but not kid-friendly tear-free formula' },
+  { id: 'pt_23', icon: '☀️',   tip: 'Reef-safe sunscreen is required at Castaway Cay — pack reef-safe sunscreen for everyone, especially for beach and pool days' },
+  { id: 'pt_24', icon: '📱',   tip: 'Big kids (Walker, Skye, and Oskar) — download WhatsApp before the trip to stay connected with new and old friends onboard and after the cruise' },
 ];
 
 const SPARKLES = [
@@ -216,6 +219,12 @@ function PackingContent({ isAdmin }) {
   );
 }
 
+const APP_CHECKLIST = [
+  { icon: '📱', text: 'Download the DCL Navigator app on ALL phones — including kids\' devices' },
+  { icon: '👨‍👩‍👧‍👦', text: 'Primary account holders (Laura, Julie, and Jenni) — link all individuals in your stateroom to your primary account so everyone can see the daily schedule, menus, and activities together' },
+  { icon: '🎤', text: 'Optional: Schedule a phone call from Mickey Mouse for the little ones — available through the Navigator app, a magical surprise for young cruisers!' },
+];
+
 function AppContent() {
   const PILLS = ['Daily Schedule', 'Restaurant Menus', 'Onboard Group Chat', 'Show Times', 'Ship Map & Deck Plans', 'Port Excursion Details'];
   return (
@@ -239,8 +248,38 @@ function AppContent() {
         borderLeft: '4px solid var(--gold)', background: '#FFFBF0',
         borderRadius: '0 10px 10px 0', padding: '14px 18px',
         fontFamily: 'Nunito, sans-serif', fontSize: '15px', color: '#2C2C2C',
+        marginBottom: '28px',
       }}>
         📲 <strong>Action:</strong> Download now and add your reservation # before July 22
+      </div>
+
+      {/* ── Before You Board Checklist ── */}
+      <div style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', fontWeight: 700, color: 'var(--navy)', marginBottom: '14px' }}>
+        Before You Board — App Setup Checklist
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        {APP_CHECKLIST.map((item, i) => (
+          <div key={i} style={{
+            display: 'flex', alignItems: 'flex-start', gap: '14px',
+            background: '#F8F6FF', borderRadius: '12px', padding: '14px 18px',
+            border: '1px solid #E8E0FF',
+          }}>
+            {/* Checkbox indicator */}
+            <div style={{
+              width: '22px', height: '22px', borderRadius: '6px', flexShrink: 0, marginTop: '1px',
+              border: '2px solid #7B2FBE', background: 'white',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#7B2FBE' }} />
+            </div>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', flex: 1 }}>
+              <span style={{ fontSize: '20px', lineHeight: '1.4', flexShrink: 0 }}>{item.icon}</span>
+              <span style={{ fontFamily: 'Nunito, sans-serif', fontSize: '15px', color: '#2C2C2C', lineHeight: 1.6 }}>
+                {item.text}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -284,6 +323,25 @@ function DiningContent() {
           Book both immediately on June 23 when Online Check-In opens — they fill the same day
         </div>
       </div>
+
+      {/* Beverage Notes */}
+      <div style={{ borderLeft: '4px solid var(--gold)', background: 'white', borderRadius: '0 14px 14px 0', padding: '20px 24px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+        <div style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', fontWeight: 700, color: '#a16207', marginBottom: '14px' }}>
+          🥤 Beverage Notes
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {[
+            { bullet: '✅', text: 'Soda/pop is complimentary throughout the cruise — available at the drink stations on Deck 11 and at dinner' },
+            { bullet: '💳', text: 'Alcoholic beverages are an additional cost and are not included in your cruise fare' },
+            { bullet: '💳', text: 'Specialty coffee drinks, smoothies, and fresh-squeezed juices are also an extra charge — standard drip coffee is available complimentary at meal times' },
+          ].map((item, i) => (
+            <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+              <span style={{ fontSize: '16px', lineHeight: '1.6', flexShrink: 0 }}>{item.bullet}</span>
+              <span style={{ fontFamily: 'Nunito, sans-serif', fontSize: '15px', color: '#444', lineHeight: 1.6 }}>{item.text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -321,7 +379,7 @@ function TippingContent() {
 // ── Accordion ─────────────────────────────────────────────────────────────────
 
 const ACCORDION_SECTIONS = [
-  { id: 'packing',    icon: '🎒', title: 'Packing Tips',               teaser: '20 must-know tips for packing smart' },
+  { id: 'packing',    icon: '🎒', title: 'Packing Tips',               teaser: '23 must-know tips for packing smart' },
   { id: 'app',        icon: '📱', title: 'Must-Download: Navigator App', teaser: 'Your onboard lifeline — download before you leave' },
   { id: 'dining',     icon: '🍽️', title: 'Dining Tips',                 teaser: 'Rotational dining, specialty restaurants & what to book' },
   { id: 'gratuities', icon: '💰', title: 'Tipping Guide',               teaser: "What's pre-charged and suggested amounts per role" },
@@ -352,7 +410,7 @@ function AccordionSection({ section, open, onToggle, isAdmin }) {
       </button>
 
       <div style={{
-        maxHeight: open ? '2000px' : '0',
+        maxHeight: open ? '4000px' : '0',
         overflow: 'hidden',
         transition: 'max-height 0.3s ease',
         background: 'white',
